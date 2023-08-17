@@ -1,5 +1,6 @@
 {% extends "base_generic.html" %}
 
+{% load i18n %}
 {% block content %}
     <h1>Albums</h1>
 
@@ -8,12 +9,16 @@
 
       {% for album in albums_list %}
       <li>
-        <a href="{% url 'albums'%}?id={{album.id}}">{{ album.title }}</a>
+        <a href="{% url 'album'%}?id={{album.id}}">{{ album.title }}</a>
       </li>
       {% endfor %}
     </ul>
 
     {% else %}
+
       <p>There are no albums for now..</p>
     {% endif %}
 {% endblock %}
+
+
+

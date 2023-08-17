@@ -1,6 +1,6 @@
 from django.test import TestCase
-from library_app.models import Genre, Book, Author
-from library_app.config import CF_DEFAULT
+from collection_app.models import Genres, Artists, Client, Tracks, Albums
+from collection_app.config import CF_DEFAULT
 from django.db.utils import DataError
 
 
@@ -19,6 +19,10 @@ def creation_tests(cls_model, normal: dict, failing: dict):
 normal_name = 'a' * CF_DEFAULT
 long_name = 'a' * (CF_DEFAULT + 1)
 
-GenreTests = creation_tests(Genre, {'name': normal_name}, {'name': long_name})
-AuthorTests = creation_tests(Author, {'full_name': normal_name}, {'full_name': long_name})
-BookTests = creation_tests(Book, {'title': normal_name}, {'title': long_name})
+GenresTests = creation_tests(Genres, {'name': normal_name}, {'name': long_name})
+ArtistsTests = creation_tests(Artists, {'full_name': normal_name}, {'full_name': long_name})
+TracksTests = creation_tests(Tracks, {'title': normal_name}, {'title': long_name})
+AlbumsTests = creation_tests(Albums, {'title': normal_name}, {'title': long_name})
+ClientTests = creation_tests(Client, {'title': normal_name}, {'title': long_name})
+
+

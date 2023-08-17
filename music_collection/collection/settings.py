@@ -4,9 +4,13 @@ from os import getenv, path
 import os
 
 
+LOGIN_REDIRECT_URL = 'profile'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'static/audio_files'
@@ -48,10 +52,20 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20
 }
 
+LANGUAGES = (
+    ('en', 'English'),
+    ('ru', 'Russian'),
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale/'),
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -134,3 +148,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # При запуске новых проектов в Django 3.2 типом по умолчанию для первичных ключей установлено значение a, BigAutoFieldпредставляющее собой 64-битное целое число
 
 TEST_RUNNER = 'tests.runner.PostgresSchemaRunner'
+

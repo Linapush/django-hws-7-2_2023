@@ -14,12 +14,14 @@
 
       {% for track in tracks_list %}
       <li>
-        <a href="{% url 'tracks'%}?id={{track.id}}">{{ track.title }}</a>
+        <a href="{% url 'track'%}?id={{track.id}}">{{ track.title }}</a>
       </li>
       {% endfor %}
       
       <a href="{% url 'listen'%}?id={{track.id}}">{{ track.title }}</a>
     </ul>
+
+    
 
     {% else %}
       <p>There are no tracks for now..</p>

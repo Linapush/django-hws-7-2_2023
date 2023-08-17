@@ -17,7 +17,16 @@ from pathlib import Path
 from datetime import timezone, datetime
 import requests
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from datetime import timedelta
 
+from django.shortcuts import render
+
+def audio_page(request):
+    audio_track = Tracks.objects.first() # Здесь используйте вашу модель или объект, откуда получить audio_url
+    audio_url = audio_track.get_audio_url() # Здесь используйте метод get_audio_url() вашей модели
+    tracks_list = audio_track.get_tracks_list()  # Здесь используйте свою функцию получения списка треков
+    return render(request, 'audio_page.html', {'audio_url': audio_url, 'tracks_list': tracks_list})
 
 # Эта функция отвечает за регистрацию нового пользователя на сайте.
 
@@ -230,14 +239,19 @@ def entity_view(cls_model, name, template):
     @auth_decorators.login_required
     def view(request):
         target_id = request.GET.get('id', '')
-        context = {name: cls_model.objects.get(id=target_id)}
+        context = {}
+        try:
+            if target_id:
+                context = {name: cls_model.objects.get(id=target_id)}
+        except ValueError:
+            context = {name: None}  # or any other alternative action, e.g. redirect to an error page
         return render(
             request,
             template,
             context=context,
         )
     return view
-    
+
 TracksListView = collection_view(Tracks, 'tracks', config.TRACKS_LIST)
 AlbumsListView = collection_view(Albums, 'albums', config.ALBUMS_LIST)
 ArtistsListView = collection_view(Artists, 'artists', config.ARTISTS_LIST)
@@ -293,7 +307,7 @@ def profile_page(request):
     )
 
 @auth_decorators.login_required
-def subscription_purchase_page(request):
+def purchase_page(request):
     client = Client.objects.get(user=request.user)
     price = config.SUBSCRIPTION_PRICE
     show_text = 'Subscribe'
@@ -302,15 +316,15 @@ def subscription_purchase_page(request):
     if request.method == 'POST' and client.money >= price:
         with transaction.atomic():
             client.money -= price
-            client.subscription_expiry = timezone.now() + datetime.timedelta(days=config.SUBSCRIPTION_DAYS)
+            client.subscription_expiry = timezone.now() + timedelta(days=config.SUBSCRIPTION_DAYS)
             client.save()
 
-        return HttpResponseRedirect(reverse('track'))
+        return HttpResponseRedirect(reverse('subscription'))
     
     #TODO  добавить в Клиента поля 
     return render(
         request,
-        template_name=config.TEMPLATE_PURCHASE_SUBSCRIPTION,
+        template_name=config.TEMPLATE_PURCHASE,
         context={
             'option': 'subscription',
             'track': None,
@@ -422,6 +436,27 @@ def my_view(request):
     else:
         # Обработка других типов запросов
         return HttpResponse('Request processed.')
+    
+from .forms import SubscriptionForm
+from django.shortcuts import redirect
+
+@auth_decorators.login_required
+def subscription(request):
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            user = Client.objects.get(id=request.user.id) # получить информацию о пользователе
+            subscription_price = form.cleaned_data['amount'] # получить цену подписки из формы
+            if user.balance >= subscription_price: # если баланс пользователя позволяет списать нужную сумму
+                user.balance -= subscription_price # списать деньги со счета пользователя
+                user.save() # сохранить изменения в базе данных
+                Client.objects.create(user=user, amount=subscription_price) # создать запись в базе данных о покупке подписки
+                return redirect('success') # перенаправить пользователя на страницу с сообщением об успешной покупке
+            else: # если у пользователя недостаточно средств на счете
+                return redirect('error') # перенаправить пользователя на страницу с сообщением об ошибке
+    else:
+        form = SubscriptionForm()
+    return render(request, 'pages/subscription.html',{'form': form})
 
 
 ############################################################

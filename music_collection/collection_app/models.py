@@ -4,7 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import  MinValueValidator, MaxValueValidator
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, date, timedelta, timezone
 from . import config
 from django.utils.translation import gettext_lazy as _
 from django.conf.global_settings import AUTH_USER_MODEL
@@ -22,19 +22,38 @@ class UUIDMixin(models.Model):
     class Meta:
         abstract = True
 
+from django.utils import timezone
+
+def future_date_validator(value):
+    if value > timezone.now():
+        raise ValidationError(_('Date cannot be in the future.'))
+
 class CreatedMixin(models.Model):
-    created = models.DateTimeField(_('created'), default=datetime.now, blank=True, null=False)
+    created = models.DateTimeField(_('created'), default=timezone.now, blank=True, null=False, validators=[future_date_validator])
 
     class Meta:
         abstract = True
 
 class ModifiedMixin(models.Model):
-    modified = models.DateTimeField(_('modified'), default=datetime.now, blank=True, null=False)
+    modified = models.DateTimeField(_('modified'), default=timezone.now, blank=True, null=False, validators=[future_date_validator])
 
     class Meta:
         abstract = True
 
 # Основные таблицы
+
+def rating_validator(num: int):
+    if num is not None and num <= 0:
+        raise ValidationError(
+            f'Please, enter a value greater than zero',
+            params={'value': int}
+        )
+    elif num > 5:
+        raise ValidationError(
+            f'Value can not be greater than 5',
+            params={'value': int}
+        )
+
 
 class Tracks(UUIDMixin, CreatedMixin, ModifiedMixin):
     album = models.ForeignKey('Albums', on_delete=models.CASCADE, blank=True, null=True)  
@@ -42,15 +61,15 @@ class Tracks(UUIDMixin, CreatedMixin, ModifiedMixin):
     audio_file = models.FileField(upload_to='static/audio_files/', null=False, blank=True)
     duration = models.PositiveIntegerField(null=True, blank=True)
     year = models.IntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2023)])    
-    country = models.TextField(blank=True)
-    rating = models.IntegerField()
+    country = models.CharField(max_length=50, blank=True)
+    rating = models.IntegerField(validators=[rating_validator])
 
     def clean(self):
         if self.audio_file:
             audio = MP3(self.audio_file.path)
             duration = int(audio.info.length)
-            if duration > 300: # 5 минут
-                raise ValidationError(_('Продолжительность трека не может превышать 5 минут.'))
+            if duration > 600: # 5 минут
+                raise ValidationError(_('Продолжительность трека не может превышать 10 минут.'))
             self.duration = duration
 
     @property
@@ -59,6 +78,7 @@ class Tracks(UUIDMixin, CreatedMixin, ModifiedMixin):
             return self.audio_file.url
         else:
             return "/static/audio_files/I_Had_a_Feeling _-_ TrackTribe.mp3"
+        
 
     def __str__(self):
         return f'{self.title}, {self.country}, {self.duration}'
@@ -114,19 +134,51 @@ class Genres(UUIDMixin, CreatedMixin, ModifiedMixin):
         verbose_name_plural = _('genres')
 
 
+# class Subscription(models.Model):
+#     name = models.CharField(max_length=100)
+#     email = models.EmailField()
+#     amount = models.IntegerField()
+        
+
+
+def sub_pr_validator(value):
+    if value is not None and value <= 0:
+        raise ValidationError(
+            f'Please, enter a value greater zero',
+            params={'value': value}
+        )
+        
+def money_validator(num: int):
+    if num is not None and num < 0:
+        raise ValidationError(
+            f'Please, enter a value greater zero',
+            params={'value': num}
+        )
+
+
 class Client(CreatedMixin, ModifiedMixin):
     user = models.OneToOneField(AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
+    # subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
     tracks = models.ManyToManyField(Tracks, blank=True)
+    subscription_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, validators=[sub_pr_validator])
     subscription_expiry = models.DateField(null=True, blank=True)
     money = models.DecimalField(
     max_digits=config.DECIMAL_MAX_DIGITS,
     decimal_places=config.DECIMAL_PLACES,
     default=0,
+    validators=[money_validator]
 )
     class Meta:
         db_table = '"collection"."client"'
         verbose_name = _('client')
         verbose_name_plural = _('client')
+
+
+    def save(self, *args, **kwargs):
+        current_date = datetime.now()
+        self.subscription_expiry = current_date + timedelta(days=180)
+        super().save(*args, **kwargs)
+
 
 # Таблицы связи
 

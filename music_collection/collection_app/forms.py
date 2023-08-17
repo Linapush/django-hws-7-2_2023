@@ -22,14 +22,15 @@ class RegistrationForm(auth_forms.UserCreationForm):
         model = auth_models.User
         fields = ['username', 'first_name', 'last_name', 'password1', 'password2']
 
-class ArtistPostForm(Form):
-    class Meta:
-        model = Artists
-        fields = ('name', 'birth_date', 'country', 'education')
+class LoginForm(auth_forms.UserCreationForm):
+    username = CharField(max_length=CF_DEFAULT, required=True)
+    password = CharField(max_length=CF_DEFAULT, required=True)
 
-    widgets = {
-        'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
-        'birth_date': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Age'}),
-        'country': forms.Select(attrs={'class': 'form-control'}),
-        'education': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'}),
-    }
+    class Meta:
+        model = auth_models.User
+        fields = ['username', 'password']
+
+class SubscriptionForm(forms.Form):
+    name = forms.CharField(label='ФИО')
+    email = forms.EmailField(label='Email')
+    amount = forms.IntegerField(label='Сумма подписки')

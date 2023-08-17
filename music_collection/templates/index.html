@@ -1,56 +1,47 @@
 {% extends "base_generic.html" %}
+{% load static %}
+
 {% block content %}
-<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}">  
   <h1>MUSIC COLLECTION</h1>
-  <link rel="stylesheet" type="text/css" href="static/styles/track-listen.css">
 
-  <p>Welcome to <em>MUSIC COLLECTION</em>, your personal world of sounds!</p>
-</head>
+  <!-- JS -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+  <script src="{% static 'js/clouds.js' %}"></script>
+  <script src="{% static 'js/music.js' %}"></script>   -->
 
+  <p class="p">Welcome to MUSIC COLLECTION, your personal world of sounds!</p>
 <body>
-  <h2>Dynamic content</h2>
-    <div class="main">
-      <div class = "text-main">
-        <!-- {% load static %}
-        <img src="{% static 'apple-music_large.png' %}"/> -->
-        <p>Our music collection has the following record counts:</p>
-        <ul>
-          <li><strong>Tracks:</strong> {{ tracks }}</li>
-          <li><strong>Genres:</strong> {{ genres }}</li>
-          <li><strong>Artists:</strong> {{ artists }}</li>
-          <li><strong>Albums:</strong> {{ albums }}</li>
-        </ul>
-      </div>
-    </div>
-</body>
+  <h2 class="h2">Dynamic content</h2>
 
-<h3>Listen track</h2>
-  <audio id="audio" src="https://www.last.fm/ru/music/David+Wise/_/Stickerbrush+Symphony" controls></audio>
-  <div id="controls">
-    <div class="audio-track"><div class="time"></div></div>
-    <button class="play">Play</button>
-    <button class="pause">Pause</button>
-    <button class="prev">&#60;prev</button>
-    <button class="next">next&#62;</button>
+
+  <div id="animation"></div>
+  <div class="main">
+    <div class="text-main">
+      <p>Our music collection has the following record counts:</p>
+      <ul>
+        <li><strong>Tracks:</strong> {{ tracks }}</li>
+        <li><strong>Genres:</strong> {{ genres }}</li>
+        <li><strong>Artists:</strong> {{ artists }}</li>
+        <li><strong>Albums:</strong> {{ albums }}</li>
+      </ul>
+    </div>
   </div>
 
-  <h2>Your favourite tracks &#x1f49b;</h2>
-  <script src="static/js/track.js"></script><style>
-  </style>
-  <iframe align="top" frameborder="0" style="border:10px purple;width:100%;height:450px;" width="100%" height="450" src="https://music.yandex.ru/iframe/#playlist/linapush2002pushkareva/3">Слушайте <a href='https://music.yandex.ru/users/linapush2002pushkareva/playlists/3'>Мне нравится</a> — <a href='https://music.yandex.ru/users/linapush2002pushkareva'>linapush2002pushkareva</a> на Яндекс Музыке</iframe>
-  </body>
+  <h3 class="h3">Listen track</h3>
   
-  </footer>
-  <p>Music collection © 2023</p>
-  </footer>
+  <div id="controls">
+    <audio id="audio" src="https://www.last.fm/ru/music/David+Wise/_/Stickerbrush+Symphony" controls></audio>
 
-{% endblock %}
 
-<h2>Your favourite tracks &#x1f49b;</h2>
-<iframe align="top" frameborder="0" style="border:10px purple;width:100%;height:450px;" width="100%" height="450" src="https://music.yandex.ru/iframe/#playlist/linapush2002pushkareva/3">Слушайте <a href='https://music.yandex.ru/users/linapush2002pushkareva/playlists/3'>Мне нравится</a> — <a href='https://music.yandex.ru/users/linapush2002pushkareva'>linapush2002pushkareva</a> на Яндекс Музыке</iframe>
+  <h2 class="favorite">Your favourite tracks &#x1f49b;</h2>
+  <script src="{% static 'js/track.js' %}"></script>
 </body>
-
-</footer>
-<p>Music collection © 2023</p>
-</footer>
-
+  <body>
+    <iframe align="top" frameborder="0" style="border:10px purple;width:100%;height:450px;" width="100%" height="450" src="https://music.yandex.ru/iframe/#playlist/linapush2002pushkareva/3">Слушайте <a href='https://music.yandex.ru/users/linapush2002pushkareva/playlists/3'>Мне нравится</a> — <a href='https://music.yandex.ru/users/linapush2002pushkareva'>linapush2002pushkareva</a> на Яндекс Музыке</iframe>
+    
+    <footer class="footer">
+      <p>Music collection © 2023</p>
+    </footer>
+  </body>
+{% endblock %}

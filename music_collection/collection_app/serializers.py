@@ -5,7 +5,7 @@ from .models import Tracks, Artists, Genres, Albums, Client
 class ClientSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = Client
-        fields = ['id', 'account_name', 'money', 'users', 'created']
+        fields = ['id', 'account_name', 'subscription_price', 'subscription_expiry', 'money', 'users', 'created']
 
 class TrackSerializer(HyperlinkedModelSerializer):
     class Meta:

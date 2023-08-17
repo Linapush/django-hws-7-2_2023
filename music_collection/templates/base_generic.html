@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">\
 <head>
   {% block title %}<title>Music collection</title>{% endblock %}
   {% load static %}
-  <link rel="stylesheet" href="{% static 'nav.css/' %}">
-</head>
+  <link rel="stylesheet" href="{% static 'styles/index.css/' %}">
 <body>
+  
   {% block sidebar %}
   <nav class="navbar navbar-expand-md
     ">
@@ -16,35 +16,54 @@
     <div class="collapse navbar-collapse" id="main-navigation">
       <nav class="menu">
               
-      <div style='text-align:center; width:100%'>
+      
       <a href="{% url 'homepage' %}">Home</a>
       |
       <a class="nav-link" href="{% url 'profile' %}">Profile</a>
       |
       <a class="nav-link" href="{% url 'tracks' %}">Tracks</a>
       |
-      <a class="nav-link" href="{% url 'artists' %}">Artists</a>
+      <a class="nav-link" href="{% url 'artists' %}">Executor</a>
       |
       <a class="nav-link" href="{% url 'genres' %}">Genres</a>
       |
       <a class="nav-link" href="{% url 'albums' %}">Albums</a>
-      </div>
-        {% if not user.is_authenticated %}
-        <li class="nav-item">
-          <div style='text-align:right; width:100%'>
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
-        </div>
-        </li>
-        {% endif %}
-        {% if user.is_authenticated %}
-        <div style='text-align:right; width:100%'>
-          <a class="nav-link" href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
-        </div>
-        {% endif %}
 
-      </ul>
+    </head>
     </div>
   </nav>
+    <!-- сделать так, чтобы они были не близко к полям и не такие большие-->
+    {% if not user.is_authenticated %}
+    <style>
+      .login-logout-register {
+        text-align:right; width: 60px;   margin: 0px 0; padding: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 20px; box-shadow: 0px 5px 10px #F5F5DC;
+      }
+      </style>
+    
+      <a class="nav-link login-logout-register" href="{% url 'login' %}">Login</a>
+    
+    {% endif %}
+    {% if user.is_authenticated %}
+    <style>
+      .login-logout-register {
+        text-align:right; width: 60px;   margin: 0px 0; padding: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 20px; box-shadow: 0px 5px 10px #F5F5DC;
+      }
+      </style>
+      <a class="nav-link login-logout-register" href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
+    
+    {% endif %}
+    
+    {% if not user.is_authenticated %}
+    <style>
+      .login-logout-register {
+        text-align:right; width: 60px;   margin: 0px 0; padding: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 20px; box-shadow: 0px 5px 10px #F5F5DC;
+      }
+      </style>  
+    
+      <a class="nav-link login-logout-register" href="{% url 'register' %}?next={{ request.path }}"> Register</a>
+    {% endif %}
+<!---->
+
   {% endblock %}
   {% block content %}{% endblock %}
   {% if is_paginated %}

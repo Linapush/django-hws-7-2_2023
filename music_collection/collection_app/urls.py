@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from django.contrib.auth import views as auth_views
 
 router = DefaultRouter()
 router.register(r'Tracks', views.TracksViewSet, basename='Tracks')
@@ -11,8 +12,10 @@ router.register(r'Albums', views.AlbumsViewSet, basename='Albums')
 urlpatterns = [
     path('', views.custom_main, name='homepage'),
     path('profile/', views.profile_page, name='profile'),
-    path('purchase/', views.subscription_purchase_page, name='subscription_purchase_page'),
+    path('purchase/', views.purchase_page, name='purchase'),
     path('listen/', views.listen_music, name='listen'),
+    path('subscription/', views.subscription, name='subscription'),
+    path('audio_page/', views.audio_page, name='audio_page'),
 
     path('tracks/', views.TracksListView.as_view(), name='tracks'),
     path('tracks/rest/track_list', views.track_list, name='track_list'),
@@ -34,6 +37,10 @@ urlpatterns = [
     # auth
     path('accounts/', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    
 ]
 
 

@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<head>
+    <title>Audio Page</title>
+</head>
+<body>
+    <h1>Tracks</h1>
+
+    {% if tracks_list %}
+    <ul>
+        {% for track in tracks_list %}
+        <li>
+            <a href="{% url 'track' %}?id={{track.id}}">{{ track.title }}</a>
+        </li>
+        {% endfor %}
+
+        <li>
+            <a href="{{ audio_url }}">Ссылка на аудиофайл</a>
+        </li>
+    </ul>
+    {% else %}
+    <p>There are no tracks for now..</p>
+    {% endif %}
+</body>
+{% endblock %}

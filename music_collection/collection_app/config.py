@@ -11,9 +11,10 @@ EMAIL_LENGTH = 128
 PAGINATOR_THRESHOLD = 20
 # TEMPLATE_WEATHER = 'pages/weather.html'
 TEMPLATE_PROFILE = 'pages/profile.html'
-TEMPLATE_PURCHASE_SUBSCRIPTION = 'pages/purchase.html'
+TEMPLATE_PURCHASE = 'pages/purchase.html'
 TEMPLATE_LISTEN = 'pages/listen.html'
-TEMPLATE_REGISTER = 'registration/register.html' #рег
+TEMPLATE_REGISTER = 'registration/register.html' 
+TEMPLATE_SUBSCRIPTION = 'pages/subscription.html'
 TEMPLATE_MAIN = 'index.html'
 TEMPLATE_PLAYER = 'pages/player.html'
 
@@ -33,3 +34,4 @@ GENRES_LIST = f'{COLLECTION}/genres.html'
 
 SUBSCRIPTION_PRICE = 299
 TRACK_PRICE = 59
+SUBSCRIPTION_DAYS = 28

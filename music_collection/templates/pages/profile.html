@@ -1,32 +1,56 @@
 {% extends "base_generic.html" %}
+{% load static %}
 
 {% block content %}
+<body class="body">
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}">
     {% if user_data %}
-        <h4>Your profile data:</h4>
-        <ul>
+    <style> .profile-data {text-align:justify; margin-left: 29px;} </style>
+    <style> .profile-main {text-align: center; margin-left: 29px;} </style>
+
+
+        <h4 >Your profile data:</h4>
+        <ul class="profile-data">
             {% for key, value in user_data.items %} 
                 <li>{{key}}: {{value}}</li>
             {% endfor %}
         </ul>
+    <!-- <style>.my_track {text-align: inherit;}</style>
+        <h4> My Tracks: </h4>
+        <ul>
+            {% for track in tracks %}
+                <li> {{ track }}</li>
+            {% endfor %}
+        </ul> -->
+        
     {% endif %}
 
-    {% if books %}
-        <h4>Your books:</h4>
+    {% if tracks %}
+        <h4>Your tracks:</h4>
         <ul>
-            {% for book in books %}
-                <li> {{ book }}</li>
+            {% for track in tracks %}
+                <li> {{ track }}</li>
             {% endfor %}
         </ul>
     {% else %}
-        <h4>You do not have books yet!</h4>
+        <h4>You do not have purchase yet!</h4>
     {% endif %}
+
+    <!-- <h4>All tracks</h4>
+        <a href="{% url 'audio_page' %}">Audio tracks</a></li> -->
 
     {% if form_errors %}
         <h5>{{ form_errors }}</h5>
     {% endif %}
+    
     <form action="/profile/" method="POST">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Add funds">
     </form>
+    <br>
+
+    <h4>You can get subscription purchase and add funds to add more tracks!</h4>
+    <li><a href="{% url 'purchase' %}">Purchase</a></li>
+</body>
 {% endblock %}
