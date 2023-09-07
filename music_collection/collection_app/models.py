@@ -138,7 +138,6 @@ class Genres(UUIDMixin, CreatedMixin, ModifiedMixin):
 #     name = models.CharField(max_length=100)
 #     email = models.EmailField()
 #     amount = models.IntegerField()
-        
 
 
 def sub_pr_validator(value):
@@ -154,7 +153,6 @@ def money_validator(num: int):
             f'Please, enter a value greater zero',
             params={'value': num}
         )
-
 
 class Client(CreatedMixin, ModifiedMixin):
     user = models.OneToOneField(AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)

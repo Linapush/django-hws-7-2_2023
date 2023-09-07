@@ -16,6 +16,8 @@ urlpatterns = [
     path('listen/', views.listen_music, name='listen'),
     path('subscription/', views.subscription, name='subscription'),
     path('audio_page/', views.audio_page, name='audio_page'),
+    path('succes/', views.purchase_page, name='succes'),
+    path('error/', views.purchase_page, name='error'),
 
     path('tracks/', views.TracksListView.as_view(), name='tracks'),
     path('tracks/rest/track_list', views.track_list, name='track_list'),

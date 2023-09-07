@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Tracks page</h1>
+
+{% if track %}
+<ul>
+    <li>Title: {{ track.title }}</li>
+    <li>Duration: {{ track.duration }}</li>
+    <li>Year: {{ track.year }}</li>
+    <li>Country: {{ track.country }}</li>
+    <li>Rating: {{ track.rating }}</li>
+    <li>Audio: {{ track.audio_file }}</li>
+</ul>
+
+    {% else %}
+      <p>Tracks not found..</p>
+    {% endif %}
+{% endblock %}

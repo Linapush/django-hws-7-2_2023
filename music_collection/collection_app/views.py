@@ -321,7 +321,7 @@ def purchase_page(request):
 
         return HttpResponseRedirect(reverse('subscription'))
     
-    #TODO  добавить в Клиента поля 
+#TODO  добавить в Клиента поля 
     return render(
         request,
         template_name=config.TEMPLATE_PURCHASE,
@@ -337,7 +337,6 @@ def purchase_page(request):
         },
     )
 #TODO добавить в Клиента поля 
-
 
 
 #GET/POST?
@@ -445,18 +444,20 @@ def subscription(request):
     if request.method == 'POST':
         form = SubscriptionForm(request.POST)
         if form.is_valid():
-            user = Client.objects.get(id=request.user.id) # получить информацию о пользователе
+            user = request.client # получить информацию о пользователе
             subscription_price = form.cleaned_data['amount'] # получить цену подписки из формы
-            if user.balance >= subscription_price: # если баланс пользователя позволяет списать нужную сумму
-                user.balance -= subscription_price # списать деньги со счета пользователя
+            if user.money >= subscription_price: # если баланс пользователя позволяет списать нужную сумму
+                user.money -= subscription_price # списать деньги со счета пользователя
                 user.save() # сохранить изменения в базе данных
-                Client.objects.create(user=user, amount=subscription_price) # создать запись в базе данных о покупке подписки
+                client = Client(user=user, amount=subscription_price) # создать запись в базе данных о покупке подписки
+                client.save() # сохранить изменения в базе данных
                 return redirect('success') # перенаправить пользователя на страницу с сообщением об успешной покупке
             else: # если у пользователя недостаточно средств на счете
                 return redirect('error') # перенаправить пользователя на страницу с сообщением об ошибке
     else:
         form = SubscriptionForm()
     return render(request, 'pages/subscription.html',{'form': form})
+
 
 
 ############################################################
